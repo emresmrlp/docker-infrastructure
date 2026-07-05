@@ -4,16 +4,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nginx \
     openssl
 
-RUN mkdir -p /etc/nginx/ssl && \
-    openssl req -x509 -nodes \
-    -newkey rsa:2048 \
-    -days 365 \
-    -keyout /etc/nginx/ssl/nginx.key \
-    -out /etc/nginx/ssl/nginx.crt \
-    -subj "/C=TR/ST=Istanbul/L=Sariyer/CN=ysumeral.42.fr"
-
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE 443
+COPY tools/nginx_init.sh /usr/local/bin/nginx_init.sh
+RUN chmod +x /usr/local/bin/nginx_init.sh
+ENTRYPOINT ["/usr/local/bin/nginx_init.sh"]
 
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
+
+EXPOSE 443
