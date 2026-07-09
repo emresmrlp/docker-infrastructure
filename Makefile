@@ -1,8 +1,12 @@
 COMPOSE_FILE = ./srcs/docker-compose.yml
 
+DATA_DIR = /home/ysumeral/data
+MARIADB_DIR = $(DATA_DIR)/mariadb
+
 all: up
 
 up:
+	mkdir -p $(MARIADB_DIR)
 	docker compose -f $(COMPOSE_FILE) up -d --build
 
 down:

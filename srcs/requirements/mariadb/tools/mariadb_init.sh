@@ -1,12 +1,16 @@
 #!/bin/bash
 
+set -e
+
 MYSQL_PASS=$(cat /run/secrets/db_password | tr -d '\n')
 MYSQL_ROOT_PASS=$(cat /run/secrets/db_root_password | tr -d '\n')
 
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     echo "MariaDB: Database will be set up..."
+
     mysql_install_db --user=mysql --datadir=/var/lib/mysql
-    service mysql start
+
+    service mariadb start
 
     mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
     mysql -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASS}';"
@@ -15,6 +19,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
     mysql -e "FLUSH PRIVILEGES;"
 
     mysqladmin -uroot -p"${MYSQL_ROOT_PASS}" shutdown
+
     echo "MariaDB: Database is set up."
 else
     echo "MariaDB: Database already set up. Skipped..."
