@@ -2,29 +2,75 @@ services:
   nginx:
     image: nginx
     build: ./requirements/nginx
+    networks:
+      - inception
+    restart: always
     ports:
       - "443:443"
-    restart: always
+    depends_on:
+      - wordpress
+    volumes:
+      - wordpress_data:/var/www/html
   mariadb:
     image: mariadb
     build: ./requirements/mariadb
-    ports:
-      - "3306:3306"
+    networks:
+      - inception
     restart: always
-    volumes:
-      - mariadb_data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE} 
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
     secrets:
       - db_password
       - db_root_password
+    healthcheck:
+      test:
+      - "CMD-SHELL"
+      - "mysqladmin -uroot -p$(cat /run/secrets/db_root_password | tr -d '\n') ping -h localhost"
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - type: volume
+        source: mariadb_data
+        target: /var/lib/mysql
+        volume:
+          nocopy: true
+  wordpress:
+    image: wordpress
+    build: ./requirements/wordpress
+    networks:
+      - inception
+    restart: always
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      WP_USER: ${WP_USER} 
+      WP_USER_EMAIL: ${WP_USER_EMAIL}
+      WP_ADMIN_USER: ${WP_ADMIN_USER} 
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+    secrets:
+      - db_password
+      - wp_password
+      - wp_admin_password
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    volumes:
+      - wordpress_data:/var/www/html
 
 secrets:
+  wp_password:
+    file: ../secrets/wp_password.txt
+  wp_admin_password:
+    file: ../secrets/wp_admin_password.txt
   db_password:
     file: ../secrets/db_password.txt
   db_root_password:
     file: ../secrets/db_root_password.txt
+
+
 
 volumes:
   mariadb_data:
@@ -33,3 +79,13 @@ volumes:
       type: none
       o: bind
       device: /home/ysumeral/data/mariadb
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/ysumeral/data/wordpress
+
+networks:
+  inception:
+    driver: bridge

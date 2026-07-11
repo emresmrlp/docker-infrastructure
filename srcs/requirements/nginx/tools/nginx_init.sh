@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 SSL_DIR="/etc/nginx/ssl"
 SSL_KEY="${SSL_DIR}/nginx.key"
 SSL_CERT="${SSL_DIR}/nginx.crt"

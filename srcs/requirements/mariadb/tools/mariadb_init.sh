@@ -16,7 +16,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
     mysql -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASS}';"
     mysql -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%';"
     mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASS}';"
-    mysql -e "FLUSH PRIVILEGES;"
+    mysql -uroot -p"${MYSQL_ROOT_PASS}" -e "FLUSH PRIVILEGES;"
 
     mysqladmin -uroot -p"${MYSQL_ROOT_PASS}" shutdown
 
