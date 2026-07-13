@@ -12,7 +12,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     php-intl \
     curl \
     ca-certificates \
-    mariadb-client
+    mariadb-client \
+    php-redis && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY ./conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
 
@@ -26,6 +28,6 @@ COPY tools/wordpress_init.sh /usr/local/bin/wordpress_init.sh
 RUN chmod +x /usr/local/bin/wordpress_init.sh
 ENTRYPOINT ["/usr/local/bin/wordpress_init.sh"]
 
-CMD ["php-fpm8.2", "-F"]
-
 EXPOSE 9000
+
+CMD ["php-fpm8.2", "-F"]

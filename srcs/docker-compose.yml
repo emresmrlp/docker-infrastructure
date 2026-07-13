@@ -59,8 +59,33 @@ services:
         condition: service_healthy
     volumes:
       - wordpress_data:/var/www/html
+  redis:
+    image: redis
+    build: ./requirements/bonus/redis
+    networks:
+      - inception
+    restart: always
+  ftpserver:
+    image: ftpserver
+    build: ./requirements/bonus/ftpserver
+    networks:
+      - inception
+    restart: always
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    environment:
+      FTP_USER: ${FTP_USER}
+    secrets:
+      - ftp_password
+    env_file:
+      - .env
+    volumes:
+      - wordpress_data:/var/www/html
 
 secrets:
+  ftp_password:
+    file: ../secrets/ftp_password.txt
   wp_password:
     file: ../secrets/wp_password.txt
   wp_admin_password:

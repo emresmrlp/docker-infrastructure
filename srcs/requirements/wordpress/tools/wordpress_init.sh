@@ -8,6 +8,7 @@ WP_ADMIN_PASS=$(cat /run/secrets/wp_admin_password | tr -d '\n')
 
 if [ ! -f /var/www/html/wp-config.php ]; then
     echo "WordPress: wordPress will be set up..."
+
     wp core download --allow-root --path=/var/www/html
 
     wp config create --allow-root --path=/var/www/html \
@@ -28,6 +29,15 @@ if [ ! -f /var/www/html/wp-config.php ]; then
         "${WP_USER}" "${WP_USER_EMAIL}" \
         --role=author \
         --user_pass="${WP_USER_PASS}"
+
+    wp config set WP_REDIS_HOST redis --allow-root
+    wp config set WP_REDIS_PORT 6379 --raw --allow-root
+    wp config set WP_CACHE_KEY_SALT $DOMAIN_NAME --allow-root
+ 	wp config set WP_REDIS_CLIENT phpredis --allow-root
+    wp config set WP_CACHE true --raw --allow-root
+    wp plugin install redis-cache --activate --allow-root
+    wp redis enable --allow-root
+
     echo "WordPress: WordPress is set up."
 else
     echo "WordPress: Already set up, skipping..." 
