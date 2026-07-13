@@ -36,7 +36,7 @@ if [ ! -f /var/www/html/wp-config.php ]; then
  	wp config set WP_REDIS_CLIENT phpredis --allow-root --path=/var/www/html
     wp config set WP_CACHE true --raw --allow-root --path=/var/www/html
     wp plugin install redis-cache --activate --allow-root --path=/var/www/html
-    wp redis enable --allow-root
+    wp redis enable --allow-root --path=/var/www/html
 
     echo "WordPress: WordPress is set up."
 else
