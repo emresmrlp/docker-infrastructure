@@ -30,12 +30,12 @@ if [ ! -f /var/www/html/wp-config.php ]; then
         --role=author \
         --user_pass="${WP_USER_PASS}"
 
-    wp config set WP_REDIS_HOST redis --allow-root
-    wp config set WP_REDIS_PORT 6379 --raw --allow-root
-    wp config set WP_CACHE_KEY_SALT $DOMAIN_NAME --allow-root
- 	wp config set WP_REDIS_CLIENT phpredis --allow-root
-    wp config set WP_CACHE true --raw --allow-root
-    wp plugin install redis-cache --activate --allow-root
+    wp config set WP_REDIS_HOST redis --allow-root --path=/var/www/html
+    wp config set WP_REDIS_PORT 6379 --raw --allow-root --path=/var/www/html
+    wp config set WP_CACHE_KEY_SALT $DOMAIN_NAME --allow-root --path=/var/www/html
+ 	wp config set WP_REDIS_CLIENT phpredis --allow-root --path=/var/www/html
+    wp config set WP_CACHE true --raw --allow-root --path=/var/www/html
+    wp plugin install redis-cache --activate --allow-root --path=/var/www/html
     wp redis enable --allow-root
 
     echo "WordPress: WordPress is set up."
