@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN mkdir -p /var/run/vsftpd/empty
 
-COPY ./conf/vsftpd.conf /etc/vsftpd/vsftpd.conf
+COPY ./conf/vsftpd.conf /etc/vsftpd.conf
 
 EXPOSE 21
 
@@ -14,4 +14,4 @@ COPY tools/ftpserver_init.sh /usr/local/bin/ftpserver_init.sh
 RUN chmod +x /usr/local/bin/ftpserver_init.sh
 ENTRYPOINT ["/usr/local/bin/ftpserver_init.sh"]
 
-CMD ["vsftpd", "/etc/vsftpd/vsftpd.conf"]
+CMD ["vsftpd", "/etc/vsftpd.conf"]

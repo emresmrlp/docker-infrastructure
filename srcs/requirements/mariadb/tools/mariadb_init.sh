@@ -21,8 +21,6 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
     mysqladmin -uroot -p"${MYSQL_ROOT_PASS}" shutdown
 
     echo "MariaDB: Database is set up."
-else
-    echo "MariaDB: Database already set up. Skipped..."
 fi
 
 exec "$@"

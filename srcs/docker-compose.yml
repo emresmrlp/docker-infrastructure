@@ -1,6 +1,7 @@
 services:
   nginx:
     image: nginx
+    container_name: nginx
     build: ./requirements/nginx
     networks:
       - inception
@@ -13,6 +14,7 @@ services:
       - wordpress_data:/var/www/html
   mariadb:
     image: mariadb
+    container_name: mariadb
     build: ./requirements/mariadb
     networks:
       - inception
@@ -38,6 +40,7 @@ services:
           nocopy: true
   wordpress:
     image: wordpress
+    container_name: wordpress
     build: ./requirements/wordpress
     networks:
       - inception
@@ -46,6 +49,7 @@ services:
       DOMAIN_NAME: ${DOMAIN_NAME}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
+      MYSQL_HOST: ${MYSQL_HOST}
       WP_USER: ${WP_USER} 
       WP_USER_EMAIL: ${WP_USER_EMAIL}
       WP_ADMIN_USER: ${WP_ADMIN_USER} 
@@ -61,12 +65,14 @@ services:
       - wordpress_data:/var/www/html
   redis:
     image: redis
+    container_name: redis
     build: ./requirements/bonus/redis
     networks:
       - inception
     restart: always
   ftpserver:
     image: ftpserver
+    container_name: ftpserver
     build: ./requirements/bonus/ftpserver
     networks:
       - inception
@@ -82,6 +88,24 @@ services:
       - .env
     volumes:
       - wordpress_data:/var/www/html
+  adminer:
+    image: adminer
+    container_name: adminer
+    build: ./requirements/bonus/adminer
+    networks:
+      - inception
+    restart: always
+    depends_on:
+      - mariadb
+  static-website:
+    image: static-website
+    container_name: static-website
+    build: ./requirements/bonus/static-website
+    networks:
+      - inception
+    restart: always
+    ports:
+      - "9100:9100"
 
 secrets:
   ftp_password:
@@ -94,8 +118,6 @@ secrets:
     file: ../secrets/db_password.txt
   db_root_password:
     file: ../secrets/db_root_password.txt
-
-
 
 volumes:
   mariadb_data:

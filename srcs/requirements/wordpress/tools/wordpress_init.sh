@@ -15,7 +15,7 @@ if [ ! -f /var/www/html/wp-config.php ]; then
         --dbname="${MYSQL_DATABASE}" \
         --dbuser="${MYSQL_USER}" \
         --dbpass="${MYSQL_PASS}" \
-        --dbhost=mariadb
+        --dbhost="${MYSQL_HOST}"
 
     wp core install --allow-root --path=/var/www/html \
         --url="https://${DOMAIN_NAME}" \
@@ -39,8 +39,6 @@ if [ ! -f /var/www/html/wp-config.php ]; then
     wp redis enable --allow-root --path=/var/www/html
 
     echo "WordPress: WordPress is set up."
-else
-    echo "WordPress: Already set up, skipping..." 
 fi
     
 exec "$@"
