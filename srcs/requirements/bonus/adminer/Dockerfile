@@ -18,7 +18,7 @@ RUN mkdir -p /run/php && chown www-data:www-data /run/php
 
 COPY ./conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
 
-EXPOSE 9000
+EXPOSE 8080
 
 STOPSIGNAL SIGQUIT
 

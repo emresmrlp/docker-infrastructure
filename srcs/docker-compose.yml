@@ -106,6 +106,15 @@ services:
     restart: always
     ports:
       - "9100:9100"
+  prometheus:
+    image: prometheus
+    container_name: prometheus
+    build: ./requirements/bonus/prometheus
+    networks:
+      - inception
+    restart: always
+    ports:
+      - "9090:9090"
 
 secrets:
   ftp_password:
