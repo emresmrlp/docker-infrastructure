@@ -105,7 +105,7 @@ services:
       - inception
     restart: always
     ports:
-      - "9100:9100"
+      - "9200:9200"
   prometheus:
     image: prometheus
     container_name: prometheus
@@ -126,6 +126,27 @@ services:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
     secrets:
       - grafana_password
+  cadvisor:
+    image: cadvisor
+    container_name: cadvisor
+    build: ./requirements/bonus/cadvisor
+    networks:
+      - inception
+    restart: always
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+  node-exporter:
+    image: node-exporter
+    container_name: node-exporter
+    build: ./requirements/bonus/node-exporter
+    networks:
+      - inception
+    restart: always
+    volumes:
+      - /:/host:ro,rslave
 
 secrets:
   ftp_password:
