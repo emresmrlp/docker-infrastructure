@@ -113,12 +113,25 @@ services:
     networks:
       - inception
     restart: always
+  grafana:
+    image: grafana
+    container_name: grafana
+    build: ./requirements/bonus/grafana
+    networks:
+      - inception
+    restart: always
     ports:
-      - "9090:9090"
+      - '3000:3000'
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
+    secrets:
+      - grafana_password
 
 secrets:
   ftp_password:
     file: ../secrets/ftp_password.txt
+  grafana_password:
+    file: ../secrets/grafana_password.txt
   wp_password:
     file: ../secrets/wp_password.txt
   wp_admin_password:
